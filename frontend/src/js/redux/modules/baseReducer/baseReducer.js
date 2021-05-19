@@ -4,7 +4,7 @@ import { api } from "api";
 import { NotificationManager } from "react-notifications";
 
 
-export const createReducer = (storeId, endpoint, formName=undefined, resourceList=undefined) => {
+export const createReducer = (storeId, endpoint, formName=undefined, resourceList=undefined, endpointListOption=undefined) => {
 
     // ------------------------------------
     // Constants
@@ -65,6 +65,7 @@ export const createReducer = (storeId, endpoint, formName=undefined, resourceLis
         dispatch(setLoader(true));
         api.get(endpoint, params).then((response) => {
             dispatch(setData(response));
+            console.log('data desde listar',response)
             dispatch(setPage(page));
         }).catch(() => {
         }).finally(() => {
@@ -86,6 +87,7 @@ export const createReducer = (storeId, endpoint, formName=undefined, resourceLis
 
     const crear = data => (dispatch) => {
         dispatch(setLoader(true));
+        console.log(data)
         api.post(endpoint, data).then(() => {
             NotificationManager.success('Registro creado', 'Éxito', 3000);
             if (!!resourceList)
@@ -96,6 +98,43 @@ export const createReducer = (storeId, endpoint, formName=undefined, resourceLis
             dispatch(setLoader(false));
         });
     };
+
+    const crearObjetoRelacionado = data => (dispatch) => {
+        dispatch(setLoader(true));
+        const newData = {
+            ...data,
+            level: data.level.value   
+        }
+        console.log(newData)
+        api.post(endpoint, newData).then(() => {
+            NotificationManager.success('Registro creado', 'Éxito', 3000);
+            if (!!resourceList)
+                dispatch(push(resourceList));
+        }).catch(() => {
+            NotificationManager.error('Error en la creación', 'ERROR');
+        }).finally(() => {
+            dispatch(setLoader(false));
+        });
+    };
+
+    const crearEvento = data => (dispatch) => {
+        dispatch(setLoader(true));
+        const newData = {
+            ...data,
+            anio: data.anio.value   
+        }
+        console.log(newData)
+        api.post(endpoint, newData).then(() => {
+            NotificationManager.success('Registro creado', 'Éxito', 3000);
+            if (!!resourceList)
+                dispatch(push(resourceList));
+        }).catch(() => {
+            NotificationManager.error('Error en la creación', 'ERROR');
+        }).finally(() => {
+            dispatch(setLoader(false));
+        });
+    };
+
 
     const editar = (id, data) => (dispatch) => {
         dispatch(setLoader(true));
@@ -137,6 +176,20 @@ export const createReducer = (storeId, endpoint, formName=undefined, resourceLis
         dispatch(listar());
     };
 
+    const listDataSecondary = (search) => (dispatch) => {
+        let data = [];
+        return api.get(endpointListOption, { search })
+            .then((response) => {
+                data = response.results.map((element) => ({
+                    value: element.id,
+                    label: element.name,
+                }));
+                return data;
+            })
+            .catch((err) => {
+                return data;
+            });
+    };
     const actions = {
         listar,
         leer,
@@ -145,6 +198,9 @@ export const createReducer = (storeId, endpoint, formName=undefined, resourceLis
         eliminar,
         searchChange,
         onSortChange,
+        listDataSecondary,
+        crearObjetoRelacionado,
+        crearEvento
     };
 
     // -----------------------------------

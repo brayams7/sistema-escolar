@@ -48,6 +48,13 @@ class Navbar extends Component {
                             </DropdownItem>
                             <DropdownItem>
                                 <Link tabIndex="0"
+                                   to="#">
+                                    <i className="material-icons"></i>
+                                    Config
+                                </Link>
+                            </DropdownItem>
+                            <DropdownItem>
+                                <Link tabIndex="0"
                                    to="/file-manager-list">
                                     <i className="material-icons"></i>
                                     Files

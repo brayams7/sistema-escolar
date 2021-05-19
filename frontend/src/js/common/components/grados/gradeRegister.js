@@ -1,0 +1,56 @@
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import {Link, Redirect} from 'react-router-dom';
+import LoadMask from "../Utils/LoadMask/LoadMask";
+import GradeForm from './gradeForm'
+
+class RegisterGrade extends Component {
+
+    constructor(props){
+        super(props)
+        this.state = {
+            creacion:true
+        }
+    }
+    componentWillMount(){
+        const {match, leer} = this.props
+        const id = match.params.id
+        if(id){
+            leer(id);
+            this.setState({
+                creacion:false
+            })
+        }
+    }
+
+    actualizar = (data) =>{
+        const {editar} = this.props;
+        const id = data.id
+        editar(id, data)
+    }
+
+    render() {
+        const {crearObjetoRelacionado,loader, listDataSecondary} = this.props
+        const creacion = this.state.creacion
+
+        const fun = creacion == true ? crearObjetoRelacionado : this.actualizar
+
+        return (
+            <div className="bg-light">
+                <div className="d-flex flex-column align-items-center pt-3 bienvenida">
+                    <h1 className="text-center text-dark">Crear nuevo Grado</h1>
+                </div>
+                <br />
+                <div className="login-wrapper">
+                    <div className="card card-login col-md-6">
+                        <h5 className="text-center pv">NUEVO</h5>
+                            <GradeForm onSubmit={fun} loader={loader} crear={creacion} listLevels={listDataSecondary}/>  
+                    </div>
+                </div>
+            </div>
+        )
+        
+    }
+}
+
+export default RegisterGrade;

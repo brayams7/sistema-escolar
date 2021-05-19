@@ -130,6 +130,9 @@ body {
     flex: 5;
 }
 
+.color-body{
+  background-color: #A2EDEC;
+}
 
 /*Sobre-escribiendo z-index para el swal*/
 .swal2-container {
